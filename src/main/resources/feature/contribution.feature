@@ -14,9 +14,9 @@
     * выбрать ежемесячное пополнение int "<replenishment>"
     * выбрать частичное снятие, если вклад в рублях String "<valuta>"
     * отметить чекбокс ежемесячная капитализация
-    * проверить введенные значения String "<valuta>"
+    * проверить введенные значения String "<exPercent>" String "<exAccrued>" String "<exReplenishment>" String "<exRemoval>"
 
     Примеры:
-      |valuta |sum    |term     |replenishment|
-      |Доллары|50000  |9 месяцев|1000         |
-      |Рубли  |2000000|6 месяцев|30000        |
+      |valuta |sum    |term     |replenishment|exPercent|exAccrued|exReplenishment|exRemoval |
+      |Доллары|50000  |9 месяцев|1000         |0.75     |301,42   |8000           |58301,42  |
+      |Рубли  |2000000|6 месяцев|30000        |6.25     |65132,87 |150000         |2215132,87|

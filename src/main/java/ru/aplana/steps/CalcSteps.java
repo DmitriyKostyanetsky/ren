@@ -2,34 +2,16 @@ package ru.aplana.steps;
 
 import cucumber.api.java.ru.Когда;
 import cucumber.api.java.ru.Тогда;
-import org.junit.Assert;
 import org.openqa.selenium.By;
-import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import ru.aplana.pages.CalcPage;
 import ru.aplana.util.Init;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class CalcSteps {
 
     private CalcPage calcPage = new CalcPage();
-    private Actions action = new Actions(Init.getDriver());
-
-    private List<String> expectDollars = new ArrayList<String>() {{
-        add("0.75");
-        add("301,42");
-        add("8000");
-        add("58301,42");
-    }};
-
-    private List<String> expectRubles = new ArrayList<String>() {{
-        add("6.25");
-        add("65132,87");
-        add("150000");
-        add("2215132,87");
-    }};
 
     @Когда("проверить заголовок – Рассчитайте доходность по вкладам")
     public boolean checkTitle() {
@@ -80,20 +62,18 @@ public class CalcSteps {
         calcPage.clickOnElement(calcPage.capitalizationCheckBox);
     }
 
-    @Тогда("проверить введенные значения String \"(.+)\"")
-    public void checkEnteredValues(String value) throws InterruptedException {
-        action.pause(2000);
-        action.perform();
-
-        List<String> expectedList = new ArrayList<>();
-        if (value.equals("Доллары")) {
-            expectedList = expectDollars;
-        } else if (value.equals("Рубли")) {
-            expectedList = expectRubles;
-        }
-        Assert.assertEquals(expectedList.get(0), calcPage.percentText.getText().replace("%", ""));
-        Assert.assertEquals(expectedList.get(1), calcPage.accruedText.getText().replace(" ", ""));
-        Assert.assertEquals(expectedList.get(2), calcPage.replenishText.getText().replace(" ", ""));
-        Assert.assertEquals(expectedList.get(3), calcPage.resultText.getText().replace(" ", ""));
+    @Тогда("проверить введенные значения String \"(.+)\" String \"(.+)\" String \"(.+)\" String \"(.+)\"")
+    public void checkEnteredValues(String exPercent, String exAccrued, String exReplenishment, String exRemoval) {
+        WebDriverWait wait = new WebDriverWait(Init.getDriver(), 30);
+        wait.withMessage(String.format("Ожидалось значение [%s]", exPercent))
+                .until((ExpectedCondition<Boolean>) driver -> {
+                    if (calcPage.percentText.getText().replace("%", "").replaceAll(" ", "").equals(exPercent)
+                            && calcPage.accruedText.getText().replace("%", "").replaceAll(" ", "").equals(exAccrued)
+                            && calcPage.replenishText.getText().replace("%", "").replaceAll(" ", "").equals(exReplenishment)
+                            && calcPage.resultText.getText().replace("%", "").replaceAll(" ", "").equals(exRemoval)) {
+                        return Boolean.TRUE;
+                    }
+                    return false;
+                });
     }
 }
